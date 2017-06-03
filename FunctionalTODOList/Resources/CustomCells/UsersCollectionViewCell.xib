@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="UsersCollectionViewCell" id="a0w-sL-LDx" customClass="UsersCollectionViewCell" customModule="FunctionalTODOList" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="omH-iC-OgX">
+                        <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7J4-ZN-Bha">
+                                <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="7J4-ZN-Bha" firstAttribute="centerY" secondItem="omH-iC-OgX" secondAttribute="centerY" id="Bo3-eM-8Yv"/>
+                            <constraint firstItem="7J4-ZN-Bha" firstAttribute="width" secondItem="omH-iC-OgX" secondAttribute="width" id="D6Q-yA-xjI"/>
+                            <constraint firstItem="7J4-ZN-Bha" firstAttribute="height" secondItem="omH-iC-OgX" secondAttribute="height" id="ofR-0F-Ecw"/>
+                            <constraint firstItem="7J4-ZN-Bha" firstAttribute="centerX" secondItem="omH-iC-OgX" secondAttribute="centerX" id="rEa-vl-gPe"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="omH-iC-OgX" firstAttribute="centerX" secondItem="a0w-sL-LDx" secondAttribute="centerX" id="T2Z-ua-1dm"/>
+                <constraint firstItem="omH-iC-OgX" firstAttribute="centerY" secondItem="a0w-sL-LDx" secondAttribute="centerY" id="VOC-k5-7Re"/>
+                <constraint firstItem="omH-iC-OgX" firstAttribute="width" secondItem="a0w-sL-LDx" secondAttribute="width" id="syo-Db-5iB"/>
+                <constraint firstItem="omH-iC-OgX" firstAttribute="height" secondItem="a0w-sL-LDx" secondAttribute="height" id="vKb-sb-O5q"/>
+            </constraints>
+            <connections>
+                <outlet property="bgView" destination="omH-iC-OgX" id="JIU-XH-f8R"/>
+                <outlet property="userInitialsLabel" destination="7J4-ZN-Bha" id="LVY-wD-PWB"/>
+            </connections>
+            <point key="canvasLocation" x="97" y="-96"/>
+        </collectionViewCell>
+    </objects>
+</document>

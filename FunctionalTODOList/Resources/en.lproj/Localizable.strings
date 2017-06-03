@@ -1,0 +1,55 @@
+// Copyright © FunctionalSwift.com 2017. All rights reserved.
+
+"task_title" = "Task";
+"task_description" = "Description";
+"task_state" = "State";
+"task_expiration_date" = "Expiration";
+"task_user_name" = "Assignee";
+"task_title_placeholder" = "Enter task title";
+"task_description_placeholder" = "Enter task description";
+"task_state_placeholder" = "Enter task state";
+"task_expiration_date_placeholder" = "Enter task expiration date";
+"task_user_name_placeholder" = "(Optional) Enter user name";
+
+"task_scoped_title" = "Task Title";
+"task_scoped_state" = "Task State";
+"task_scoped_user" = "User";
+
+"tasks_completed_message" = "Completed Tasks: %@";
+"tasks_in_progress_message" = "In progress Tasks: %@";
+
+"done_button_text" = "Done";
+"info_alert_title" = "Oops!";
+
+"project_description_text" = "Project Description";
+"project_description_placeholder" = "Add Project description";
+"project_task_list_text" = "Select Project Tasks:";
+
+"info_DeleteTask_alert_message" = "You can't delete a task that hasn't been previously stored.";
+"info_AddTask_alert_message" = "All fields of the task must be filled in.";
+
+"info_DeleteProject_alert_message" = "You can't delete a project that hasn't been previously stored.";
+"info_AddProject_alert_message" = "All fields of Project must be filled in.";
+
+"error_alert_title" = "Oops!";
+"error_AddTask_alert_message" = "An error occurred creating a task.";
+"error_invalid_data" = "Task data invalid.";
+"error_project_invalid_data" = "Project data invalid.";
+
+"user_first_name" = "First Name";
+"user_last_name" = "Last Name";
+"user_first_name_placeholder" = "Enter user first name";
+"user_last_name_placeholder" = "Enter user last name";
+
+"error_task_title_too_short" = "Task title must be greater than 40 characters";
+"error_task_unknown_state" = "Task state invalid, please enter valid state";
+"error_task_invalid_date" = "Task expiration must be after today";
+"error_task_invalid_name" = "Task user name must be greater than 15 characters";
+
+"error_AddProject_alert_message" = "An error occurred creating a project.";
+"error_UpdateProject_alert_message" = "An error occurred updating the project.";
+"error_DeleteProject_alert_message" = "An error occurred deleting the project.";
+"error_project_description_too_short" = "Project description must be greater than 30 characters";
+
+"project_date" = "Expiration Date:";
+"project_state" = "State:";

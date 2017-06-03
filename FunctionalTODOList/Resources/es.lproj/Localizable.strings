@@ -1,0 +1,54 @@
+// Copyright © FunctionalSwift.com 2017. All rights reserved.
+
+"task_title" = "Tarea";
+"task_description" = "Descripcion";
+"task_state" = "Estado";
+"task_expiration_date" = "Día de expiración";
+"task_user_name" = "Asignado a";
+"task_title_placeholder" = "Escribe un título para la tarea";
+"task_description_placeholder" = "Escribe una descripción para la tarea";
+"task_state_placeholder" = "Escribe el estado de la tarea";
+"task_expiration_date_placeholder" = "Escribe la fecha de expiración";
+"task_user_name_placeholder" = "(Opcional) Escribe el nombre de usuario";
+
+"task_scoped_title" = "Titulo de la tarea";
+"task_scoped_state" = "Estado de la tarea";
+"task_scoped_user" = "Usuario";
+
+"tasks_completed_message" = "Tareas completadas %@:";
+"tasks_in_progress_message" = "Tareas en proceso %@:";
+
+"done_button_text" = "Hecho";
+"info_alert_title" = "Oops!";
+
+"project_description_text" = "Descripción del Proyecto";
+"project_description_placeholder" = "Añade la descripción del Proyecto";
+"project_task_list_text" = "Selecciona las Tareas del Proyecto";
+
+"info_AddSubtask_alert_message" = "Debes guardar los datos de la tarea antes de crear una subtarea.";
+"info_DeleteTask_alert_message" = "No puedes eliminar una tarea que no ha sido almacenada previamente.";
+"info_AddTask_alert_message" = "Todos los campos de la tarea son requeridos.";
+
+"info_DeleteProject_alert_message" = "No puedes eliminar un proyecto que no ha sido almacenada previamente.";
+"info_AddProject_alert_message" = "Todos los campos del proyecto son requeridos.";
+
+"error_alert_title" = "Oops!";
+"error_AddTask_alert_message" = "Ha ocurrido un error creando la tarea.";
+"error_invalid_data" = "Los datos de la tarea no son válidos.";
+"error_project_invalid_data" = "Los datos del proyecto no son válidos.";
+
+"user_first_name" = "Nombre";
+"user_last_name" = "Apellidos";
+"user_first_name_placeholder" = "Escribe el nombre del usuario";
+"user_last_name_placeholder" = "Escribe los apellidos del usuario";
+
+"error_task_title_too_short" = "El título de la tarea debe ser mayor a 40 caracteres";
+"error_task_unknown_state" = "Estado inválido, introduce un estado válido";
+"error_task_invalid_date" = "La fecha de expiración de la tarea debe ser posterior al día de hoy";
+"error_task_invalid_name" = "El nombre del usuario asignado de la tarea debe ser mayor a 15 caracteres";
+
+"error_AddProject_alert_message" = "Ha ocurrido un error creando el proyecto";
+"error_UpdateProject_alert_message" = "Ha ocurrido un error actualizando los datos del proyeccto";
+"error_DeleteProject_alert_message" = "Ha ocurrido un error eliminando los datos del proyecto.";
+"error_project_description_too_short" = "La descripción del projecto debe ser mayor a 30 caracteres";
+

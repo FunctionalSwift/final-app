@@ -1,0 +1,39 @@
+
+/* Class = "UILabel"; text = "Tap \"Add Subtasks\" get started"; ObjectID = "1K4-hY-PNo"; */
+"1K4-hY-PNo.text" = "Tap \"Add Subtasks\" get started";
+
+/* Class = "UITableViewSection"; headerTitle = "SUBTASKS"; ObjectID = "2Yc-SF-d70"; */
+"2Yc-SF-d70.headerTitle" = "SUBTASKS";
+
+/* Class = "UITableViewSection"; headerTitle = "NEW TASK DETAILS"; ObjectID = "75e-AI-Eyt"; */
+"75e-AI-Eyt.headerTitle" = "NEW TASK DETAILS";
+
+/* Class = "UINavigationItem"; title = "Add a Task"; ObjectID = "D2v-be-CIW"; */
+"D2v-be-CIW.title" = "Add a Task";
+
+/* Class = "UITableViewSection"; headerTitle = "ACTIONS"; ObjectID = "Gzy-UY-JCk"; */
+"Gzy-UY-JCk.headerTitle" = "ACTIONS";
+
+/* Class = "UILabel"; text = "No subtasks"; ObjectID = "T9c-5N-Fpo"; */
+"T9c-5N-Fpo.text" = "No subtasks";
+
+/* Class = "UILabel"; text = "create new tasks"; ObjectID = "eeM-VF-jKh"; */
+"eeM-VF-jKh.text" = "create new tasks";
+
+/* Class = "UILabel"; text = "Empty Board"; ObjectID = "flB-cg-RZd"; */
+"flB-cg-RZd.text" = "Empty Board";
+
+/* Class = "UIButton"; normalTitle = "Delete Task"; ObjectID = "iYP-Zm-LgU"; */
+"iYP-Zm-LgU.normalTitle" = "Delete Task";
+
+/* Class = "UINavigationItem"; title = "Task List"; ObjectID = "juE-C2-uJH"; */
+"juE-C2-uJH.title" = "Task List";
+
+/* Class = "UISearchBar"; yhR-wj-aDg.scopeButtonTitles[0] = "Title"; ObjectID = "yhR-wj-aDg"; */
+"yhR-wj-aDg.scopeButtonTitles[0]" = "Title";
+
+/* Class = "UISearchBar"; yhR-wj-aDg.scopeButtonTitles[1] = "Title"; ObjectID = "yhR-wj-aDg"; */
+"yhR-wj-aDg.scopeButtonTitles[1]" = "Title";
+
+/* Class = "UIButton"; normalTitle = "Add Subtasks"; ObjectID = "zjn-61-MsV"; */
+"zjn-61-MsV.normalTitle" = "Add Subtasks";

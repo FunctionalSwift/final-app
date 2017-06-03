@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Project List-->
+        <scene sceneID="hE2-pP-mr7">
+            <objects>
+                <viewController storyboardIdentifier="ProjectListViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="OFw-CJ-uPn" customClass="ProjectListViewController" customModule="FunctionalTODOList" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Qmh-CH-KhN"/>
+                        <viewControllerLayoutGuide type="bottom" id="2ZU-V9-kwq"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="CdF-HR-NsT">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g98-ph-Mi8">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Empty Board" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4g7-aQ-8Hw">
+                                        <rect key="frame" x="138.5" y="295.5" width="98.5" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="create new projects" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ClQ-H3-fsP">
+                                        <rect key="frame" x="48" y="323" width="279" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.4756532457" green="0.4756532457" blue="0.4756532457" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.91754716629999999" green="0.91770458219999995" blue="0.91753727200000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="ClQ-H3-fsP" firstAttribute="centerY" secondItem="g98-ph-Mi8" secondAttribute="centerY" id="Qxp-JC-Hyq"/>
+                                    <constraint firstItem="ClQ-H3-fsP" firstAttribute="leading" secondItem="g98-ph-Mi8" secondAttribute="leading" constant="48" id="Tyg-XK-5Tw"/>
+                                    <constraint firstItem="ClQ-H3-fsP" firstAttribute="top" secondItem="4g7-aQ-8Hw" secondAttribute="bottom" constant="7" id="XyQ-Fb-uEr"/>
+                                    <constraint firstItem="ClQ-H3-fsP" firstAttribute="centerX" secondItem="g98-ph-Mi8" secondAttribute="centerX" id="dxh-P0-TLl"/>
+                                    <constraint firstItem="4g7-aQ-8Hw" firstAttribute="centerX" secondItem="g98-ph-Mi8" secondAttribute="centerX" id="nkm-8q-b2V"/>
+                                </constraints>
+                            </view>
+                            <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="yF4-Ui-jYZ" customClass="TaskTableView" customModule="FunctionalTODOList" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="72" width="375" height="595"/>
+                                <color key="backgroundColor" red="0.91754716629999999" green="0.91770458219999995" blue="0.91753727200000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <sections/>
+                            </tableView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="sb4-Y8-xlW">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <color key="color" red="0.35098625830000002" green="0.35446136979999998" blue="0.35446136979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
+                            <searchBar contentMode="redraw" searchBarStyle="minimal" showsScopeBar="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EVA-tH-JuN">
+                                <rect key="frame" x="0.0" y="64" width="375" height="56"/>
+                                <color key="backgroundColor" red="0.91754716629999999" green="0.91770458219999995" blue="0.91753727200000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="2ZU-V9-kwq" firstAttribute="top" secondItem="yF4-Ui-jYZ" secondAttribute="bottom" id="7cq-Ff-vYH"/>
+                            <constraint firstItem="EVA-tH-JuN" firstAttribute="top" secondItem="Qmh-CH-KhN" secondAttribute="bottom" id="9pB-7i-HS8"/>
+                            <constraint firstItem="sb4-Y8-xlW" firstAttribute="centerY" secondItem="CdF-HR-NsT" secondAttribute="centerY" id="Fxn-8K-H8M"/>
+                            <constraint firstItem="EVA-tH-JuN" firstAttribute="leading" secondItem="CdF-HR-NsT" secondAttribute="leadingMargin" constant="-16" id="NYH-Bd-PRa"/>
+                            <constraint firstItem="g98-ph-Mi8" firstAttribute="height" secondItem="CdF-HR-NsT" secondAttribute="height" id="Nrq-v2-ejX"/>
+                            <constraint firstItem="g98-ph-Mi8" firstAttribute="centerX" secondItem="CdF-HR-NsT" secondAttribute="centerX" id="V9q-iD-CvF"/>
+                            <constraint firstItem="EVA-tH-JuN" firstAttribute="centerX" secondItem="CdF-HR-NsT" secondAttribute="centerX" id="VfX-gR-iox"/>
+                            <constraint firstItem="yF4-Ui-jYZ" firstAttribute="top" secondItem="Qmh-CH-KhN" secondAttribute="bottom" constant="8" id="XSQ-a1-rqd"/>
+                            <constraint firstItem="g98-ph-Mi8" firstAttribute="width" secondItem="CdF-HR-NsT" secondAttribute="width" id="dpM-W4-eub"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="yF4-Ui-jYZ" secondAttribute="trailing" constant="-16" id="gdq-lF-FvH"/>
+                            <constraint firstItem="g98-ph-Mi8" firstAttribute="centerY" secondItem="CdF-HR-NsT" secondAttribute="centerY" id="i8F-ag-3J2"/>
+                            <constraint firstItem="yF4-Ui-jYZ" firstAttribute="leading" secondItem="CdF-HR-NsT" secondAttribute="leadingMargin" constant="-16" id="pSz-39-rFh"/>
+                            <constraint firstItem="sb4-Y8-xlW" firstAttribute="centerX" secondItem="g98-ph-Mi8" secondAttribute="centerX" id="pbo-RE-3zg"/>
+                            <constraint firstItem="sb4-Y8-xlW" firstAttribute="centerX" secondItem="CdF-HR-NsT" secondAttribute="centerX" id="t6I-rA-bLD"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Project List" id="w4f-xa-iN4">
+                        <barButtonItem key="leftBarButtonItem" image="add" id="AZM-oD-l3W">
+                            <color key="tintColor" red="0.35098625830000002" green="0.35446136979999998" blue="0.35446136979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <action selector="showTaskListAction:" destination="OFw-CJ-uPn" id="qzo-7S-k2U"/>
+                            </connections>
+                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="add" id="KDU-kz-AJ7">
+                                <color key="tintColor" red="0.35098625830000002" green="0.35446136979999998" blue="0.35446136979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="addNewProjectAction:" destination="OFw-CJ-uPn" id="le1-rX-0uA"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="sort" id="oc7-XX-h6U">
+                                <color key="tintColor" red="0.35098625830000002" green="0.35446136979999998" blue="0.35446136979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="sortProjectsAction:" destination="OFw-CJ-uPn" id="h9A-H4-ZpU"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="activityIndicator" destination="sb4-Y8-xlW" id="gN3-3V-FUW"/>
+                        <outlet property="noDataView" destination="g98-ph-Mi8" id="d25-qb-aIh"/>
+                        <outlet property="projectListTableView" destination="yF4-Ui-jYZ" id="91G-jt-Hou"/>
+                        <outlet property="searchBar" destination="EVA-tH-JuN" id="4yi-VG-din"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ns5-ik-MSV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3631.1999999999998" y="-7987.5562218890564"/>
+        </scene>
+        <!--Project Detail-->
+        <scene sceneID="l6a-CV-bUY">
+            <objects>
+                <viewController storyboardIdentifier="ProjectDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="2BC-If-TFO" customClass="ProjectDetailViewController" customModule="FunctionalTODOList" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="4Ff-2V-rgb"/>
+                        <viewControllerLayoutGuide type="bottom" id="VJx-Z6-nXN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="38E-bg-wqP">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Lw-yJ-WPA">
+                                <rect key="frame" x="16" y="82" width="343" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" textAlignment="justified" translatesAutoresizingMaskIntoConstraints="NO" id="TP0-PB-NAq" customClass="TextView" customModule="FunctionalTODOList" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="90" width="375" height="33"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" spellCheckingType="no"/>
+                            </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fX2-f4-6bX">
+                                <rect key="frame" x="16" y="140" width="343" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Gu2-LU-ARc" customClass="TaskTableView" customModule="FunctionalTODOList" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="145" width="375" height="522"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                            </tableView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lnd-V6-5E1">
+                                <rect key="frame" x="0.0" y="145" width="375" height="522"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Empty Board" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UW7-s9-cnc">
+                                        <rect key="frame" x="138.5" y="223" width="98.5" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="create new tasks" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s34-RH-Jcw">
+                                        <rect key="frame" x="48" y="250.5" width="279" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.4756532457" green="0.4756532457" blue="0.4756532457" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.92908841369999995" green="0.93727177380000004" blue="0.94131642579999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="s34-RH-Jcw" firstAttribute="centerX" secondItem="Lnd-V6-5E1" secondAttribute="centerX" id="0nG-Ht-MCV"/>
+                                    <constraint firstItem="s34-RH-Jcw" firstAttribute="centerY" secondItem="Lnd-V6-5E1" secondAttribute="centerY" id="AmC-Rg-3X3"/>
+                                    <constraint firstItem="s34-RH-Jcw" firstAttribute="leading" secondItem="Lnd-V6-5E1" secondAttribute="leading" constant="48" id="Fgt-Fk-iEL"/>
+                                    <constraint firstItem="UW7-s9-cnc" firstAttribute="centerX" secondItem="Lnd-V6-5E1" secondAttribute="centerX" id="o2f-eh-1cK"/>
+                                    <constraint firstItem="s34-RH-Jcw" firstAttribute="top" secondItem="UW7-s9-cnc" secondAttribute="bottom" constant="7" id="sAT-Lh-n0c"/>
+                                </constraints>
+                            </view>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="FzS-LG-dbc">
+                                <rect key="frame" x="177" y="396" width="20" height="20"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Gu2-LU-ARc" firstAttribute="centerX" secondItem="38E-bg-wqP" secondAttribute="centerX" id="3JT-G1-k4r"/>
+                            <constraint firstItem="TP0-PB-NAq" firstAttribute="centerX" secondItem="38E-bg-wqP" secondAttribute="centerX" id="3Qp-Xo-e5c"/>
+                            <constraint firstItem="Lnd-V6-5E1" firstAttribute="centerX" secondItem="Gu2-LU-ARc" secondAttribute="centerX" id="42Q-Jt-TYG"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="0Lw-yJ-WPA" secondAttribute="leading" id="9Fv-au-bgC"/>
+                            <constraint firstItem="0Lw-yJ-WPA" firstAttribute="centerX" secondItem="38E-bg-wqP" secondAttribute="centerX" id="9gZ-lE-aB8"/>
+                            <constraint firstItem="VJx-Z6-nXN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="TP0-PB-NAq" secondAttribute="bottom" constant="200" id="BNm-pF-Ccm"/>
+                            <constraint firstItem="FzS-LG-dbc" firstAttribute="centerY" secondItem="Gu2-LU-ARc" secondAttribute="centerY" id="Blm-Bh-hCS"/>
+                            <constraint firstItem="TP0-PB-NAq" firstAttribute="top" secondItem="0Lw-yJ-WPA" secondAttribute="bottom" constant="8" id="CBC-uc-gfe"/>
+                            <constraint firstItem="VJx-Z6-nXN" firstAttribute="top" secondItem="Gu2-LU-ARc" secondAttribute="bottom" id="Foe-uV-73C"/>
+                            <constraint firstItem="Lnd-V6-5E1" firstAttribute="centerY" secondItem="Gu2-LU-ARc" secondAttribute="centerY" id="GZF-vb-qhX"/>
+                            <constraint firstItem="FzS-LG-dbc" firstAttribute="centerX" secondItem="Gu2-LU-ARc" secondAttribute="centerX" id="RRr-ov-xFO"/>
+                            <constraint firstItem="Lnd-V6-5E1" firstAttribute="top" secondItem="fX2-f4-6bX" secondAttribute="bottom" constant="5" id="SyD-it-SGv"/>
+                            <constraint firstItem="fX2-f4-6bX" firstAttribute="top" secondItem="TP0-PB-NAq" secondAttribute="bottom" constant="17" id="UhT-5K-Gv4"/>
+                            <constraint firstItem="Lnd-V6-5E1" firstAttribute="height" secondItem="Gu2-LU-ARc" secondAttribute="height" id="aCf-sF-zgy"/>
+                            <constraint firstItem="0Lw-yJ-WPA" firstAttribute="top" secondItem="4Ff-2V-rgb" secondAttribute="bottom" constant="18" id="g3e-0Y-V8Q"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="fX2-f4-6bX" secondAttribute="leading" id="nZs-0r-1I0"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="TP0-PB-NAq" secondAttribute="leading" constant="16" id="vTW-TG-y64"/>
+                            <constraint firstItem="Gu2-LU-ARc" firstAttribute="width" secondItem="38E-bg-wqP" secondAttribute="width" id="xH7-ag-6qF"/>
+                            <constraint firstItem="Lnd-V6-5E1" firstAttribute="width" secondItem="Gu2-LU-ARc" secondAttribute="width" id="yVk-Cm-evK"/>
+                            <constraint firstItem="fX2-f4-6bX" firstAttribute="centerX" secondItem="38E-bg-wqP" secondAttribute="centerX" id="z5Y-Bo-kPc"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Project Detail" id="8Pa-wJ-M1G">
+                        <barButtonItem key="leftBarButtonItem" image="back" id="PjZ-uQ-qZE">
+                            <color key="tintColor" red="0.35098625830000002" green="0.35446136979999998" blue="0.35446136979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <action selector="backButtonAction:" destination="2BC-If-TFO" id="1mx-kZ-oIz"/>
+                            </connections>
+                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem image="save" id="MXo-co-Vkq">
+                                <color key="tintColor" red="0.35098625830000002" green="0.35446136979999998" blue="0.35446136979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="saveButtonAction:" destination="2BC-If-TFO" id="rUt-DC-yOe"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="delete" id="Yeb-oB-rAJ">
+                                <color key="tintColor" red="0.35098625830000002" green="0.35446136979999998" blue="0.35446136979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="deleteTaskAction:" destination="2BC-If-TFO" id="Cjj-aX-UBT"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="activityIndicator" destination="FzS-LG-dbc" id="Hm4-df-M9N"/>
+                        <outlet property="noDataView" destination="Lnd-V6-5E1" id="dDz-eU-rR6"/>
+                        <outlet property="projectDescriptionLabel" destination="0Lw-yJ-WPA" id="WOQ-Ui-F4y"/>
+                        <outlet property="projectDescriptionTextView" destination="TP0-PB-NAq" id="xbL-bH-FoH"/>
+                        <outlet property="taskListLabel" destination="fX2-f4-6bX" id="pth-J2-WsA"/>
+                        <outlet property="taskListTableView" destination="Gu2-LU-ARc" id="q9g-wf-Lq5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wds-41-TTP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3335.1999999999998" y="-7057.4212893553231"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="add" width="25" height="25"/>
+        <image name="back" width="25" height="25"/>
+        <image name="delete" width="25" height="25"/>
+        <image name="save" width="25" height="25"/>
+        <image name="sort" width="25" height="25"/>
+    </resources>
+</document>
