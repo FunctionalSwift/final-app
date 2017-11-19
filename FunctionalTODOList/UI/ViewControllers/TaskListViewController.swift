@@ -43,8 +43,6 @@ class TaskListViewController: UIViewController, UISearchBarDelegate, TaskDelegat
     @IBOutlet weak var noDataView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
-    fileprivate let taskCellIdentifier = "TaskTableViewCell"
-
     var tasks: [Task]?
 
     override func viewDidLoad() {
@@ -52,7 +50,6 @@ class TaskListViewController: UIViewController, UISearchBarDelegate, TaskDelegat
 
         prepareScreen()
         setupSearchBar()
-        registerTableViewCells()
 
         getTasks()
     }
@@ -60,11 +57,6 @@ class TaskListViewController: UIViewController, UISearchBarDelegate, TaskDelegat
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-
-    func registerTableViewCells() {
-
-        taskListTableView.register(UINib(nibName: taskCellIdentifier, bundle: nil), forCellReuseIdentifier: taskCellIdentifier)
     }
 
     func prepareScreen() {
@@ -86,8 +78,10 @@ class TaskListViewController: UIViewController, UISearchBarDelegate, TaskDelegat
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
 
-        if searchText.isEmpty, let tasks = tasks {
-            taskListTableView.reloadDataWith(tasks)
+        if searchText.isEmpty {
+            tasks.flatMap {
+                taskListTableView.reloadDataWith($0)
+            }
         } else {
             filterTableViewElements(scopeSelected: searchBar.selectedScopeButtonIndex, text: searchText)
         }
@@ -95,28 +89,27 @@ class TaskListViewController: UIViewController, UISearchBarDelegate, TaskDelegat
 
     func filterTableViewElements(scopeSelected: Int, text: String) {
 
-        guard let initialTasks = tasks else {
-            return
-        }
+        tasks.flatMap {
 
-        switch scopeSelected {
-        case filteredScopes.title.rawValue:
+            switch scopeSelected {
+            case filteredScopes.title.rawValue:
 
-            taskListTableView.reloadDataWith(initialTasks.filter { ($0.title?.lowercased().contains(text.lowercased()))! })
-            break
+                taskListTableView.reloadDataWith($0.filter { ($0.title?.lowercased().contains(text.lowercased()))! })
+                break
 
-        case filteredScopes.state.rawValue:
+            case filteredScopes.state.rawValue:
 
-            taskListTableView.reloadDataWith(initialTasks.filter { ($0.stateAsString().contains(text)) })
-            break
+                taskListTableView.reloadDataWith($0.filter { ($0.stateAsString().contains(text)) })
+                break
 
-        case filteredScopes.user.rawValue:
+            case filteredScopes.user.rawValue:
 
-            taskListTableView.reloadDataWith(initialTasks.filter { ($0.userName?.lowercased().contains(text.lowercased()))! })
-            break
+                taskListTableView.reloadDataWith($0.filter { ($0.userName?.lowercased().contains(text.lowercased()))! })
+                break
 
-        default:
-            break
+            default:
+                break
+            }
         }
     }
 
@@ -126,35 +119,37 @@ class TaskListViewController: UIViewController, UISearchBarDelegate, TaskDelegat
 
         activityIndicator.startAnimating()
 
-        TaskNetworkHandler.sharedInstance.getTasks({ tasks in
+        TaskNetworkHandler.sharedInstance.getTasks { response in
 
-            guard let tasksArray = tasks else {
-                return
-            }
+            response.runSync().fold({ tasks in
+                if tasks.isEmpty {
+                    self.taskListTableView.isHidden = true
+                    self.searchBar.isHidden = true
+                    self.noDataView.isHidden = false
 
-            if tasksArray.count > 0 {
+                } else {
+                    self.tasks = tasks
+                    self.taskListTableView.setupTableViewWith(tasks: tasks, taskDelegate: self, selectable: false)
+                    self.taskListTableView.isHidden = false
+                    self.searchBar.isHidden = false
+                    self.noDataView.isHidden = true
+                }
 
-                self.tasks = tasksArray
-                self.taskListTableView.setupTableViewWith(tasks: tasksArray, taskDelegate: self, selectable: false)
-                self.taskListTableView.isHidden = false
-                self.searchBar.isHidden = false
-                self.noDataView.isHidden = true
+                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
 
-            } else {
+            }, { error in
+                debugPrint(error)
+
+                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
+
                 self.taskListTableView.isHidden = true
                 self.searchBar.isHidden = true
                 self.noDataView.isHidden = false
-            }
 
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.isHidden = true
-
-        }) { error in
-
-            debugPrint(error)
-
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.isHidden = true
+                self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: error.description())
+            })
         }
     }
 
@@ -178,24 +173,37 @@ class TaskListViewController: UIViewController, UISearchBarDelegate, TaskDelegat
 
     @IBAction func sortTasksAction(_: Any) {
 
-        if let tasks = taskListTableView.getTasks() {
-            switch searchBar.selectedScopeButtonIndex {
+        switch searchBar.selectedScopeButtonIndex {
 
-            case filteredScopes.title.rawValue:
-                taskListTableView.reloadDataWith(tasks.sorted { $0.title?.compare($1.title!) == .orderedAscending })
-                break
+        case filteredScopes.title.rawValue:
 
-            case filteredScopes.state.rawValue:
-                taskListTableView.reloadDataWith(tasks.sorted { $0.stateAsString().compare($1.stateAsString()) == .orderedAscending })
-                break
+            taskListTableView.getTasks().flatMap {
 
-            case filteredScopes.user.rawValue:
-                taskListTableView.reloadDataWith(tasks.sorted { $0.userName?.compare($1.userName!) == .orderedAscending })
-                break
-
-            default:
-                break
+                taskListTableView.reloadDataWith($0.sorted { $0.title?.compare($1.title!) == .orderedAscending })
             }
+
+            break
+
+        case filteredScopes.state.rawValue:
+
+            taskListTableView.getTasks().flatMap {
+
+                taskListTableView.reloadDataWith($0.sorted { $0.stateAsString().compare($1.stateAsString()) == .orderedAscending })
+            }
+
+            break
+
+        case filteredScopes.user.rawValue:
+
+            taskListTableView.getTasks().flatMap {
+
+                taskListTableView.reloadDataWith($0.sorted { $0.userName?.compare($1.userName!) == .orderedAscending })
+            }
+
+            break
+
+        default:
+            break
         }
     }
 

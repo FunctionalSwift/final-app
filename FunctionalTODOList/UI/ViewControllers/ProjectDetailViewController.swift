@@ -15,7 +15,7 @@ class ProjectDetailViewController: UIViewController {
     @IBOutlet weak var noDataView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
-    var project: Project?
+    var taskProject: Project<Task>?
     var delegate: ProjectDelegate?
 
     override func viewDidLoad() {
@@ -26,7 +26,7 @@ class ProjectDetailViewController: UIViewController {
         getTasks()
         prepareScreen()
 
-        if project != nil {
+        if taskProject != nil {
             setProjectTasksData()
         }
     }
@@ -51,49 +51,43 @@ class ProjectDetailViewController: UIViewController {
 
     func setProjectTasksData() {
 
-        if let project = project {
-            projectDescriptionTextView.text = project.description
-        }
+        taskProject.flatMap { projectDescriptionTextView.text = $0.description }
     }
 
     func getTasks() {
 
         activityIndicator.startAnimating()
 
-        TaskNetworkHandler.sharedInstance.getTasks({ tasks in
+        TaskNetworkHandler.sharedInstance.getTasks { response in
 
-            guard let tasks = tasks else {
+            response.runSync().fold({ tasks in
+                if tasks.isEmpty {
+                    self.taskListTableView.isHidden = true
+                    self.noDataView.isHidden = false
+
+                } else {
+
+                    self.taskListTableView.setupTableViewWith(tasks: tasks, taskDelegate: nil, selectable: true)
+                    self.selectedProjectTask(allTasks: tasks)
+                    self.taskListTableView.isHidden = false
+                    self.noDataView.isHidden = true
+                }
+
+                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
+
+            }, { error in
+
+                debugPrint(error)
+
+                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
+
                 self.taskListTableView.isHidden = true
                 self.noDataView.isHidden = false
-                return
-            }
 
-            if tasks.isEmpty {
-                self.taskListTableView.isHidden = true
-                self.noDataView.isHidden = false
-
-            } else {
-
-                self.taskListTableView.setupTableViewWith(tasks: tasks, taskDelegate: nil, selectable: true)
-                self.selectedProjectTask(allTasks: tasks)
-                self.taskListTableView.isHidden = false
-                self.noDataView.isHidden = true
-            }
-
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.isHidden = true
-
-        }) { error in
-
-            debugPrint(error)
-
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.isHidden = true
-
-            self.taskListTableView.isHidden = true
-            self.noDataView.isHidden = false
-
-            self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: error.localizedDescription)
+                self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: error.description())
+            })
         }
     }
 
@@ -105,16 +99,20 @@ class ProjectDetailViewController: UIViewController {
     }
 
     @IBAction func saveButtonAction(_: Any) {
-        if project != nil {
-            updateProject()
-        } else {
-            createNewProject()
+
+        validateProject().flatMap {
+
+            if self.taskProject != nil {
+                updateProject($0)
+            } else {
+                createNewProject($0)
+            }
         }
     }
 
     @IBAction func deleteTaskAction(_: Any) {
 
-        guard let project = self.project,
+        guard let project = self.taskProject,
             let projectId = project.projectId else {
 
             debugPrint("Error - deleteTaskAction(:)")
@@ -125,23 +123,34 @@ class ProjectDetailViewController: UIViewController {
             return
         }
 
-        ProjectNetworkHandler.sharedInstance.deleteProject(projectId, { _ in
+        ProjectNetworkHandler.sharedInstance.deleteProject(projectId) { response in
 
-            if let delegate = self.delegate {
-                delegate.reloadProjectsData()
-            }
-            Navigation.sharedInstance.popViewController(true)
+            response.runSync().fold({ _ in
 
-        }) { error in
-            debugPrint(error)
+                self.delegate.flatMap { $0.reloadProjectsData() }
 
-            self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_DeleteProject_alert_message", comment: ""))
+                Navigation.sharedInstance.popViewController(true)
+
+            }, { error in
+                debugPrint(error)
+
+                self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_DeleteProject_alert_message", comment: ""))
+
+            })
         }
     }
 
     // MARK: Validate Project Data
 
-    func validateProject() -> Project? {
+    func addProjectValidation(projectId: Int?, description: String, tasks: [Task]?) -> Future<Result<Project<Task>, ProjectError>> {
+
+        return curry(Project<Task>.init)
+            <%> Future.pure(Result.pure(projectId))
+            <*> ProjectValidator.Description(description)
+            <*> Future.pure(Result.pure(tasks))
+    }
+
+    func validateProject() -> Project<Task>? {
 
         guard let projectDescription = self.projectDescriptionTextView.text else {
             debugPrint("Error - createNewTask")
@@ -152,66 +161,65 @@ class ProjectDetailViewController: UIViewController {
             return nil
         }
 
-        var tasksArray: [Task] = []
-
-        if let indexes = taskListTableView.indexPathsForSelectedRows {
-            indexes.forEach { index in
-                if let tasks = self.taskListTableView.getTasks() {
-                    tasksArray.append(tasks[index.row])
+        let tasks = taskListTableView.indexPathsForSelectedRows.flatMap {
+            $0.map { ind in
+                self.taskListTableView.getTasks().flatMap {
+                    $0[ind.row]
                 }
             }
         }
 
-        if ProjectValidator.validateDescription(description: projectDescription) {
-            return Project(projectId: project?.projectId, description: projectDescription, elements: tasksArray)
+        let projectResult = addProjectValidation(projectId: taskProject?.projectId, description: projectDescription, tasks: tasks as? [Task]).runSync()
+
+        switch projectResult {
+
+        case let .Success(project):
+            return project
+
+        case let .Failure(reason):
+
+            showErrorAlert(NSLocalizedString("info_alert_title", comment: ""),
+                           message: reason.errorDescription())
+
+            return nil
         }
-
-        showErrorAlert(NSLocalizedString("info_alert_title", comment: ""),
-                       message: NSLocalizedString("error_project_invalid_data", comment: ""))
-
-        return nil
     }
 
     // MARK: Data from Server
 
-    func createNewProject() {
+    func createNewProject(_ project: Project<Task>) {
 
-        guard let project = validateProject() else {
-            return
-        }
+        ProjectNetworkHandler.sharedInstance.createProject(project) { response in
 
-        ProjectNetworkHandler.sharedInstance.createProject(project, { proj in
+            response.runSync().fold({ proj in
 
-            if var proj = proj {
-                proj.elements = project.elements
-                self.updateProjectTasks(project: proj)
-            }
+                self.updateProjectTasks(project: Project<Task>(projectId: proj.projectId, description: proj.description, elements: project.elements))
 
-        }) { error in
-            debugPrint(error)
+            }, { error in
+                debugPrint(error)
 
-            self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_AddProject_alert_message", comment: ""))
+                self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_AddProject_alert_message", comment: ""))
+
+            })
         }
     }
 
-    func updateProject() {
-
-        guard let project = validateProject() else {
-            return
-        }
+    func updateProject(_ project: Project<Task>) {
 
         do {
-            try ProjectNetworkHandler.sharedInstance.updateProject(project, { _ in
+            try ProjectNetworkHandler.sharedInstance.updateProject(project) { response in
 
-                self.updateProjectTasks(project: project)
+                response.runSync().fold({ _ in
 
-            }, onError: { error in
-                debugPrint(error)
+                    self.updateProjectTasks(project: project)
 
-                self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_UpdateProject_alert_message", comment: ""))
+                }, { error in
+                    debugPrint(error)
 
-            })
-        } catch let WSError.dataRequired(errorDescription) {
+                    self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_UpdateProject_alert_message", comment: ""))
+                })
+            }
+        } catch let WSError.DataRequired(errorDescription) {
 
             self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: errorDescription)
 
@@ -220,27 +228,30 @@ class ProjectDetailViewController: UIViewController {
         }
     }
 
-    func updateProjectTasks(project: Project) {
-        try? ProjectNetworkHandler.sharedInstance.updateProjectTask(project, { _ in
-            self.removeProjectTask(project)
+    func updateProjectTasks(project: Project<Task>) {
 
-            if let delegate = self.delegate {
-                delegate.reloadProjectsData()
-            }
+        try? ProjectNetworkHandler.sharedInstance.updateProjectTask(project, { response in
 
-            Navigation.sharedInstance.popViewController(true)
+            response.runSync().fold({ _ in
+                self.removeProjectTask(project)
 
-        }, onError: { error in
-            debugPrint(error)
+                self.delegate.flatMap {
+                    $0.reloadProjectsData()
+                }
 
-            self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: error.localizedDescription)
+                Navigation.sharedInstance.popViewController(true)
 
+            }, { error in
+                debugPrint(error)
+
+                self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: error.description())
+            })
         })
     }
 
     func selectedProjectTask(allTasks: [Task]) {
 
-        guard let project = project,
+        guard let project = taskProject,
             let tasks = project.elements else {
             return
         }
@@ -253,9 +264,9 @@ class ProjectDetailViewController: UIViewController {
         }
     }
 
-    func removeProjectTask(_ validatedProject: Project) {
+    func removeProjectTask(_ validatedProject: Project<Task>) {
 
-        guard let oldProject = project,
+        guard let oldProject = taskProject,
             let oldProjectElements = oldProject.elements else {
             return
         }
@@ -272,11 +283,14 @@ class ProjectDetailViewController: UIViewController {
     }
 
     func updateTask(task: Task) {
-        try? TaskNetworkHandler.sharedInstance.updateTask(Task(taskId: task.taskId, title: task.title, state: task.state, expiration: task.expiration, projectId: nil, userName: task.userName), { _ in
-        }, onError: { error in
-            debugPrint(error)
+        try? TaskNetworkHandler.sharedInstance.updateTask(task, { response in
 
-            self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_UpdateProject_alert_message", comment: ""))
+            response.runSync().ifFailure({ error in
+
+                debugPrint(error)
+
+                self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_UpdateProject_alert_message", comment: ""))
+            })
         })
     }
 }

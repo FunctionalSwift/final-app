@@ -179,7 +179,7 @@
                         <barButtonItem key="leftBarButtonItem" image="back" id="VM8-WZ-aBl">
                             <color key="tintColor" red="0.35098625830000002" green="0.35446136979999998" blue="0.35446136979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
-                                <action selector="backButtonAction:" destination="tAu-QM-oht" id="Ni3-E9-4Rz"/>
+                                <action selector="backButtonAction:" destination="tAu-QM-oht" id="fMp-Es-o7z"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="mWi-Pp-vkv">
@@ -191,14 +191,14 @@
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
-                        <outlet property="taskExpirationLabel" destination="sfX-PN-ZEy" id="zty-Rr-uQn"/>
-                        <outlet property="taskExpirationTextfield" destination="rdK-Oi-vHY" id="0ot-55-d6V"/>
-                        <outlet property="taskStateLabel" destination="FFl-7b-WDw" id="REF-hv-Cjw"/>
-                        <outlet property="taskStateTextfield" destination="OX0-KL-lfV" id="iSg-lS-6K9"/>
-                        <outlet property="taskTitleLabel" destination="MQN-bh-K9M" id="Zaz-Pq-t2K"/>
-                        <outlet property="taskTitleTextView" destination="zHc-4x-9yG" id="hzM-c3-Em1"/>
-                        <outlet property="taskUserNameLabel" destination="UAY-tC-CNd" id="2TU-ub-TDB"/>
-                        <outlet property="taskUserNameTextfield" destination="bEr-Wz-QFu" id="5MD-2l-Whm"/>
+                        <outlet property="taskExpirationLabel" destination="sfX-PN-ZEy" id="8wb-pX-YXG"/>
+                        <outlet property="taskExpirationTextfield" destination="rdK-Oi-vHY" id="qpv-7Z-TAF"/>
+                        <outlet property="taskStateLabel" destination="FFl-7b-WDw" id="1JB-S9-7QB"/>
+                        <outlet property="taskStateTextfield" destination="OX0-KL-lfV" id="wk4-5j-fCh"/>
+                        <outlet property="taskTitleLabel" destination="MQN-bh-K9M" id="tuM-Ov-70g"/>
+                        <outlet property="taskTitleTextView" destination="zHc-4x-9yG" id="d0a-rK-NXK"/>
+                        <outlet property="taskUserNameLabel" destination="UAY-tC-CNd" id="bGc-b2-LUb"/>
+                        <outlet property="taskUserNameTextfield" destination="bEr-Wz-QFu" id="PFN-DR-vIw"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EPe-tu-eDL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -243,7 +243,7 @@
                                 </constraints>
                             </view>
                             <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="sfW-E0-yLy" customClass="TaskTableView" customModule="FunctionalTODOList" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="80" width="375" height="587"/>
+                                <rect key="frame" x="0.0" y="124" width="375" height="543"/>
                                 <color key="backgroundColor" red="0.91754716629999999" green="0.91770458219999995" blue="0.91753727200000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <sections/>
@@ -272,6 +272,7 @@
                             <constraint firstItem="yhR-wj-aDg" firstAttribute="leading" secondItem="wLt-AG-Laf" secondAttribute="leadingMargin" constant="-16" id="ZFF-2i-t7Q"/>
                             <constraint firstItem="3Xl-Uc-Rei" firstAttribute="centerY" secondItem="wLt-AG-Laf" secondAttribute="centerY" id="gkt-XQ-10G"/>
                             <constraint firstItem="3Xl-Uc-Rei" firstAttribute="centerX" secondItem="wLt-AG-Laf" secondAttribute="centerX" id="k90-gu-HOL"/>
+                            <constraint firstItem="sfW-E0-yLy" firstAttribute="top" secondItem="5Fh-Qg-aS1" secondAttribute="bottom" constant="60" id="kPu-54-iQJ"/>
                             <constraint firstItem="yhR-wj-aDg" firstAttribute="top" secondItem="5Fh-Qg-aS1" secondAttribute="bottom" id="ngh-ct-Jq2"/>
                             <constraint firstItem="j42-DU-n5o" firstAttribute="width" secondItem="wLt-AG-Laf" secondAttribute="width" id="p0B-Nw-Zim"/>
                         </constraints>

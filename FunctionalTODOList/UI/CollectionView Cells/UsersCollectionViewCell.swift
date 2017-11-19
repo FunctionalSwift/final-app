@@ -15,12 +15,9 @@ class UsersCollectionViewCell: UICollectionViewCell {
 
     func setupWith(user: String) {
 
-        let userArray = user.components(separatedBy: " ")
-
-        var initials = ""
-        userArray.forEach { element in
-            if initials.count < 2 { initials += element.uppercased().prefix(1) }
-        }
-        userInitialsLabel.text = initials
+        userInitialsLabel.text = user.components(separatedBy: " ")
+            .map { String($0.uppercased().prefix(1)) }
+            .prefix(2)
+            .joined()
     }
 }

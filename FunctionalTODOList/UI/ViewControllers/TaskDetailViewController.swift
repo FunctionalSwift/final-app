@@ -25,7 +25,6 @@ class TaskDetailViewController: UITableViewController, PickerViewDelegate {
     fileprivate let subTaskCollectionViewCell = "SubTaskCollectionViewCell"
 
     var task: Task?
-
     var delegate: TaskDelegate?
 
     override func viewDidLoad() {
@@ -91,23 +90,26 @@ class TaskDetailViewController: UITableViewController, PickerViewDelegate {
 
     func setTaskData() {
 
-        guard let task = task else {
-            return
+        task.flatMap {
+
+            if let title = $0.title {
+                taskTitleTextView.text(title)
+            }
+
+            taskStateTextfield.text = $0.stateAsString()
+
+            if let expirationDate = $0.expiration,
+                let expirationString = expirationDate.stringFromDate() {
+
+                taskExpirationTextfield.text = expirationString
+            }
+
+            if let userName = $0.userName {
+                taskUserNameTextfield.text = userName
+            }
         }
 
-        if let title = task.title {
-            taskTitleTextView.text(title)
-        }
-
-        taskStateTextfield.text = task.stateAsString()
-
-        if let expirationDate = task.expiration,
-            let expirationString = expirationDate.stringFromDate() {
-
-            taskExpirationTextfield.text = expirationString
-        }
-
-        if let userName = task.userName {
+        if let userName = task?.userName {
             taskUserNameTextfield.text = userName
         }
     }
@@ -121,10 +123,13 @@ class TaskDetailViewController: UITableViewController, PickerViewDelegate {
 
     @IBAction func saveButtonAction(_: Any) {
 
-        if task != nil {
-            updateTask()
-        } else {
-            createNewTask()
+        validateTask().flatMap {
+
+            if self.task != nil {
+                updateTask($0)
+            } else {
+                createNewTask($0)
+            }
         }
     }
 
@@ -141,18 +146,35 @@ class TaskDetailViewController: UITableViewController, PickerViewDelegate {
             return
         }
 
-        TaskNetworkHandler.sharedInstance.deleteTask(taskId, { _ in
+        TaskNetworkHandler.sharedInstance.deleteTask(taskId) { response in
 
-            if self.delegate != nil {
-                self.delegate?.reloadTasksData()
-            }
+            response.runSync().fold({ _ in
 
-            Navigation.sharedInstance.popViewController(true)
+                self.delegate.flatMap {
+                    $0.reloadTasksData()
+                }
 
-        }) { error in
+                Navigation.sharedInstance.popViewController(true)
 
-            debugPrint(error)
+            }, { error in
+                debugPrint(error)
+
+                self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_DeleteTask_alert_message", comment: ""))
+            })
         }
+    }
+
+    // MARK: Validate Task Data
+
+    func addTaskValidation(taskId: Int?, title: String, state: String, expiration: String, projectId: Int?, user: String?) -> Future<Result<Task, TaskError>> {
+
+        return curry(Task.init)
+            <%> Future.pure(Result.pure(taskId))
+            <*> TaskValidator.Title(title)
+            <*> Future.pure(Task.state(with: state))
+            <*> TaskValidator.Expiration(expiration.dateFromString())
+            <*> Future.pure(Result.pure(projectId))
+            <*> Future.pure(Result.pure(user))
     }
 
     func validateTask() -> Task? {
@@ -169,63 +191,69 @@ class TaskDetailViewController: UITableViewController, PickerViewDelegate {
             return nil
         }
 
-        if TaskValidator.validateTitle(title: taskTitle),
-            TaskValidator.validateState(state: Task.stateAsBool(state: taskState)),
-            TaskValidator.validateDate(date: taskExpiration.dateFromString()) {
+        let taskResult = addTaskValidation(taskId: self.task?.taskId, title: taskTitle, state: taskState, expiration: taskExpiration, projectId: self.task?.projectId, user: userName != "" ? userName : nil)
+            .runSync()
 
-            return Task(taskId: task?.taskId, title: taskTitle, state: Task.stateAsBool(state: taskState), expiration: taskExpiration.dateFromString(), projectId: task?.projectId, userName: userName)
+        switch taskResult {
+        case let .Success(task):
+
+            return task
+
+        case let .Failure(reason):
+
+            showErrorAlert(NSLocalizedString("info_alert_title", comment: ""),
+                           message: reason.errorDescription())
+
+            return nil
         }
-
-        showErrorAlert(NSLocalizedString("info_alert_title", comment: ""),
-                       message: NSLocalizedString("error_invalid_data", comment: ""))
-        return nil
     }
 
     // MARK: Data from Server
 
-    func createNewTask() {
+    func createNewTask(_ task: Task) {
 
-        guard let task = validateTask() else {
-            return
-        }
+        TaskNetworkHandler.sharedInstance.createTask(task) { response in
 
-        TaskNetworkHandler.sharedInstance.createTask(task, { _ in
+            response.runSync().fold({ _ in
+                self.delegate.flatMap {
+                    $0.reloadTasksData()
+                }
 
-            if self.delegate != nil {
-                self.delegate?.reloadTasksData()
-            }
+                Navigation.sharedInstance.popViewController(true)
 
-            Navigation.sharedInstance.popViewController(true)
+            }, { error in
+                debugPrint(error)
 
-        }) { error in
-
-            debugPrint(error)
-
-            self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_AddTask_alert_message", comment: ""))
+                self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_AddTask_alert_message", comment: ""))
+            })
         }
     }
 
-    func updateTask() {
+    func updateTask(_ task: Task) {
 
-        guard let task = validateTask() else {
-            return
-        }
+        do {
+            try TaskNetworkHandler.sharedInstance.updateTask(task) { response in
 
-        try? TaskNetworkHandler.sharedInstance.updateTask(task, { _ in
+                response.runSync().fold({ _ in
+                    self.delegate.flatMap {
+                        $0.reloadTasksData()
+                    }
 
-            if self.delegate != nil {
-                self.delegate?.reloadTasksData()
+                    Navigation.sharedInstance.popViewController(true)
+
+                }, { error in
+                    debugPrint(error)
+
+                    self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_UpdateTask_alert_message", comment: ""))
+                })
             }
+        } catch let WSError.DataRequired(errorDescription) {
 
-            Navigation.sharedInstance.popViewController(true)
+            self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: errorDescription)
 
-        }, onError: { error in
-
-            debugPrint(error)
-
-            self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_UpdateTask_alert_message", comment: ""))
-
-        })
+        } catch {
+            showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: NSLocalizedString("error_UpdateTask_alert_message", comment: ""))
+        }
     }
 
     // MARK: PickerViewDelegate

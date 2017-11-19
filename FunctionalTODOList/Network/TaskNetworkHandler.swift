@@ -18,74 +18,80 @@ enum TaskWS: Int {
     }
 }
 
+typealias taskResult = Result<Task, WSError>
+typealias tasksResult = Result<[Task], WSError>
+typealias tasksResponse = (_ response: Future<tasksResult>) -> Void
+typealias taskResponse = (_ response: Future<taskResult>) -> Void
+
 class TaskNetworkHandler: NetworkHandler {
 
     static var sharedInstance = TaskNetworkHandler()
 
-    typealias tasksResponse = (_ response: [Task]?) -> Void
-    typealias taskResponse = (_ response: Task?) -> Void
-    typealias errorResponse = (_ error: Error) -> Void
+    func getTasks(_ completion: @escaping tasksResponse) {
 
-    func getTasks(_ onSuccess: @escaping tasksResponse, onError: @escaping errorResponse) {
+        performBasicGetWithPath(TaskWS.list.getWS(), onSuccess: { json in
 
-        performBasicGetWithPath(TaskWS.list.getWS(), onSuccess: { jsonArray in
-
-            onSuccess(self.getTasks(jsonObject: jsonArray))
+            completion(Future.async(tasksResult.Success(self.getTasks(jsonObject: json)!)))
 
         }) { error in
-            onError(error)
+
+            completion(Future.pure(tasksResult.Failure(.GenericError(Message: error.localizedDescription))))
         }
     }
 
-    func getTask(_ id: String, _ onSuccess: @escaping taskResponse, onError: @escaping errorResponse) throws {
+    func getTask(_ id: String, _ completion: @escaping taskResponse) throws {
 
         guard id != "" else {
-            throw WSError.dataRequired(Message: "field id is required")
+            throw WSError.DataRequired(Message: "field id is required")
         }
 
-        performBasicGetWithPath(TaskWS.get.getWS() + id, onSuccess: { jsonDictionary in
+        performBasicGetWithPath(TaskWS.get.getWS() + id, onSuccess: { json in
 
-            onSuccess(self.getTask(jsonObject: jsonDictionary))
+            completion(Future.async(taskResult.Success(self.getTask(jsonObject: json)!)))
 
         }) { error in
-            onError(error)
+
+            completion(Future.pure(taskResult.Failure(.GenericError(Message: error.localizedDescription))))
         }
     }
 
-    func createTask(_ task: Task, _ onSuccess: @escaping taskResponse, onError: @escaping errorResponse) {
+    func createTask(_ task: Task, _ completion: @escaping taskResponse) {
 
-        performBasicPostWithPath(TaskWS.create.getWS(), parameters: Task.encode(task), onSuccess: { jsonArray in
+        performBasicPostWithPath(TaskWS.create.getWS(), parameters: Task.encode(task), onSuccess: { json in
 
-            onSuccess(self.getTask(jsonObject: jsonArray!))
+            completion(Future.async(taskResult.Success(self.getTask(jsonObject: json)!)))
 
         }) { error in
-            onError(error)
+
+            completion(Future.pure(taskResult.Failure(.GenericError(Message: error.localizedDescription))))
         }
     }
 
-    func updateTask(_ task: Task, _ onSuccess: @escaping taskResponse, onError: @escaping errorResponse) throws {
+    func updateTask(_ task: Task, _ completion: @escaping taskResponse) throws {
 
         guard let taskID = task.taskId else {
-            throw WSError.dataRequired(Message: "field id is required")
+            throw WSError.DataRequired(Message: "field id is required")
         }
 
-        performBasicPutWithPath(TaskWS.update.getWS() + String(describing: taskID), parameters: Task.encode(task), onSuccess: { jsonArray in
+        performBasicPutWithPath(TaskWS.update.getWS() + String(describing: taskID), parameters: Task.encode(task), onSuccess: { json in
 
-            onSuccess(self.getTask(jsonObject: jsonArray!))
+            completion(Future.async(taskResult.Success(self.getTask(jsonObject: json)!)))
 
         }) { error in
-            onError(error)
+
+            completion(Future.pure(taskResult.Failure(.GenericError(Message: error.localizedDescription))))
         }
     }
 
-    func deleteTask(_ id: Int, _ onSuccess: @escaping taskResponse, onError: @escaping errorResponse) {
+    func deleteTask(_ id: Int, _ completion: @escaping taskResponse) {
 
-        performBasicDeleteWithPath(TaskWS.delete.getWS() + String(id), onSuccess: { jsonArray in
+        performBasicDeleteWithPath(TaskWS.delete.getWS() + String(id), onSuccess: { json in
 
-            onSuccess(self.getTask(jsonObject: jsonArray!))
+            completion(Future.async(taskResult.Success(self.getTask(jsonObject: json)!)))
 
         }) { error in
-            onError(error)
+
+            completion(Future.pure(taskResult.Failure(.GenericError(Message: error.localizedDescription))))
         }
     }
 
@@ -94,29 +100,17 @@ class TaskNetworkHandler: NetworkHandler {
         if let jsonArray = jsonObject as? [Any] {
 
             return getTask(jsonObject: jsonArray.first)
-
-        } else if let dictionaryArray = jsonObject as? [String: AnyObject] {
-
-            return Task.decode(dictionaryArray)
         }
 
-        return nil
+        return (jsonObject as? [String: AnyObject]).flatMap(Task.decode)
     }
 
     func getTasks(jsonObject: Any?) -> [Task]? {
 
-        guard let tasks = jsonObject as? [AnyObject] else {
+        guard let tasks = jsonObject as? [Any] else {
             return nil
         }
 
-        var taskArray = [Task]()
-
-        tasks.forEach { task in
-            if let taskData = self.getTask(jsonObject: task) {
-                taskArray.append(taskData)
-            }
-        }
-
-        return taskArray
+        return tasks.flatMap(getTask)
     }
 }

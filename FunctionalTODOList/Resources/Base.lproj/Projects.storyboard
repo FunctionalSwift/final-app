@@ -54,15 +54,15 @@
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <sections/>
                             </tableView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="sb4-Y8-xlW">
-                                <rect key="frame" x="169" y="315" width="37" height="37"/>
-                                <color key="color" red="0.35098625830000002" green="0.35446136979999998" blue="0.35446136979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </activityIndicatorView>
                             <searchBar contentMode="redraw" searchBarStyle="minimal" showsScopeBar="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EVA-tH-JuN">
                                 <rect key="frame" x="0.0" y="64" width="375" height="56"/>
                                 <color key="backgroundColor" red="0.91754716629999999" green="0.91770458219999995" blue="0.91753727200000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="sb4-Y8-xlW">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <color key="color" red="0.35098625830000002" green="0.35446136979999998" blue="0.35446136979999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -73,13 +73,13 @@
                             <constraint firstItem="g98-ph-Mi8" firstAttribute="height" secondItem="CdF-HR-NsT" secondAttribute="height" id="Nrq-v2-ejX"/>
                             <constraint firstItem="g98-ph-Mi8" firstAttribute="centerX" secondItem="CdF-HR-NsT" secondAttribute="centerX" id="V9q-iD-CvF"/>
                             <constraint firstItem="EVA-tH-JuN" firstAttribute="centerX" secondItem="CdF-HR-NsT" secondAttribute="centerX" id="VfX-gR-iox"/>
-                            <constraint firstItem="yF4-Ui-jYZ" firstAttribute="top" secondItem="Qmh-CH-KhN" secondAttribute="bottom" constant="8" id="XSQ-a1-rqd"/>
                             <constraint firstItem="g98-ph-Mi8" firstAttribute="width" secondItem="CdF-HR-NsT" secondAttribute="width" id="dpM-W4-eub"/>
                             <constraint firstAttribute="trailingMargin" secondItem="yF4-Ui-jYZ" secondAttribute="trailing" constant="-16" id="gdq-lF-FvH"/>
                             <constraint firstItem="g98-ph-Mi8" firstAttribute="centerY" secondItem="CdF-HR-NsT" secondAttribute="centerY" id="i8F-ag-3J2"/>
                             <constraint firstItem="yF4-Ui-jYZ" firstAttribute="leading" secondItem="CdF-HR-NsT" secondAttribute="leadingMargin" constant="-16" id="pSz-39-rFh"/>
                             <constraint firstItem="sb4-Y8-xlW" firstAttribute="centerX" secondItem="g98-ph-Mi8" secondAttribute="centerX" id="pbo-RE-3zg"/>
                             <constraint firstItem="sb4-Y8-xlW" firstAttribute="centerX" secondItem="CdF-HR-NsT" secondAttribute="centerX" id="t6I-rA-bLD"/>
+                            <constraint firstItem="yF4-Ui-jYZ" firstAttribute="top" secondItem="Qmh-CH-KhN" secondAttribute="bottom" constant="8" id="xs7-Bl-rWf"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Project List" id="w4f-xa-iN4">

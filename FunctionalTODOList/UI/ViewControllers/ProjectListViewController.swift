@@ -2,13 +2,14 @@
 
 import UIKit
 
-class ProjectListViewController: UIViewController, UISearchBarDelegate, TaskDelegate, ProjectDelegate {
+class ProjectListViewController: UIViewController, UISearchBarDelegate, TaskDelegate, ProjectDelegate, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var projectListTableView: TaskTableView!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var noDataView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    var projects: [Project]?
+
+    var projects: [Project<Task>]?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,11 +45,9 @@ class ProjectListViewController: UIViewController, UISearchBarDelegate, TaskDele
 
         if searchText.isEmpty {
 
-            guard let projects = projects else {
-                return
+            projects.flatMap {
+                projectListTableView.reloadDataWith($0)
             }
-
-            projectListTableView.reloadDataWith(projects)
         } else {
             filterTableViewElements(text: searchText)
         }
@@ -56,60 +55,63 @@ class ProjectListViewController: UIViewController, UISearchBarDelegate, TaskDele
 
     func filterTableViewElements(text: String) {
 
-        if let projects = projects {
-            projectListTableView.reloadDataWith(projects.filter {
-                ($0.description?.lowercased().contains(text.lowercased()))!
+        projects.flatMap {
+            projectListTableView.reloadDataWith(
+                $0.filter {
+                    ($0.description?.lowercased().contains(text.lowercased()))!
             })
         }
     }
 
     // MARK: Data from Server
 
+    func map<Date>(_ proj: Project<Task>, transform: @escaping (Task) -> Date) -> Project<Date> {
+
+        return Project(projectId: nil, description: nil, elements: proj.elements.map { $0.map(transform) })
+    }
+
     func getProjects() {
 
         activityIndicator.startAnimating()
 
-        ProjectNetworkHandler.sharedInstance.getProjects({ projects in
+        ProjectNetworkHandler.sharedInstance.getProjects { response in
 
-            guard let projects = projects else {
+            response.runSync().fold({ projects in
+
+                if projects.isEmpty {
+                    self.projectListTableView.isHidden = true
+                    self.searchBar.isHidden = true
+                    self.noDataView.isHidden = false
+                } else {
+
+                    self.projects = projects
+                    self.projectListTableView.setupTableViewWith(projects: projects, taskDelegate: self, selectable: false)
+                    self.projectListTableView.isHidden = false
+                    self.searchBar.isHidden = false
+                    self.noDataView.isHidden = true
+                }
+
+                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
+
+            }, { error in
+                debugPrint(error)
+
                 self.projectListTableView.isHidden = true
                 self.searchBar.isHidden = true
                 self.noDataView.isHidden = false
 
-                return
-            }
+                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
 
-            if projects.isEmpty {
-                self.projectListTableView.isHidden = true
-                self.searchBar.isHidden = true
-                self.noDataView.isHidden = false
-            } else {
+                self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: error.description())
 
-                self.projects = projects
-                self.projectListTableView.setupTableViewWith(projects: projects, taskDelegate: self, selectable: false)
-                self.projectListTableView.isHidden = false
-                self.searchBar.isHidden = false
-                self.noDataView.isHidden = true
-            }
-
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.isHidden = true
-
-        }) { error in
-            debugPrint(error)
-
-            self.projectListTableView.isHidden = true
-            self.searchBar.isHidden = true
-            self.noDataView.isHidden = false
-
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.isHidden = true
-
-            self.showErrorAlert(NSLocalizedString("error_alert_title", comment: ""), message: error.localizedDescription)
+            })
         }
     }
 
     // MARK: Actions
+
     @IBAction func addNewProjectAction(_: Any) {
 
         guard let projectDetailVC = Navigation.getViewController(projectDetailViewController, from: Storyboards.Projects.rawValue) as? ProjectDetailViewController else {
@@ -123,8 +125,8 @@ class ProjectListViewController: UIViewController, UISearchBarDelegate, TaskDele
 
     @IBAction func sortProjectsAction(_: Any) {
 
-        if let projects = projectListTableView.getProjects() {
-            projectListTableView.reloadDataWith(projects.sorted { $0.description?.compare($1.description!) == .orderedAscending })
+        projectListTableView.getProjects().flatMap {
+            projectListTableView.reloadDataWith($0.sorted { $0.description?.compare($1.description!) == .orderedAscending })
         }
     }
 
@@ -138,11 +140,13 @@ class ProjectListViewController: UIViewController, UISearchBarDelegate, TaskDele
     }
 
     // MARK: TaskDelegate
+
     func reloadTasksData() {
         getProjects()
     }
 
     // MARK: ProjectDelegate
+
     func reloadProjectsData() {
         getProjects()
     }
@@ -155,7 +159,7 @@ class ProjectListViewController: UIViewController, UISearchBarDelegate, TaskDele
             return
         }
 
-        projectDetailVC.project = projects[view.tag]
+        projectDetailVC.taskProject = projects[view.tag]
         projectDetailVC.delegate = self
 
         Navigation.sharedInstance.pushViewController(projectDetailVC, animated: true)

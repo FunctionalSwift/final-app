@@ -3,8 +3,26 @@
 import UIKit
 
 typealias TaskTypesCount = (completed: Int, doing: Int)
+typealias TaskResult = Result<Bool, TaskError>
 
-struct Task: Equatable {
+public enum TaskError {
+    case TitleTooShort
+    case UnknownState
+    case InvalidDate
+
+    func errorDescription() -> String {
+        switch self {
+        case .TitleTooShort:
+            return NSLocalizedString("error_task_title_too_short", comment: "")
+        case .UnknownState:
+            return NSLocalizedString("error_task_unknown_state", comment: "")
+        case .InvalidDate:
+            return NSLocalizedString("error_task_invalid_date", comment: "")
+        }
+    }
+}
+
+public struct Task: Equatable {
 
     let taskId: Int?
     let title: String?
@@ -13,17 +31,8 @@ struct Task: Equatable {
     let projectId: Int?
     let userName: String?
 
-    static func modelsFromDictionaryArray(_ array: [[String: AnyObject]]?) -> [Task] {
-
-        guard let array = array else {
-            return []
-        }
-
-        var models: [Task] = []
-        for item in array {
-            models.append(Task.decode(item))
-        }
-        return models
+    static func modelsFromDictionaryArray(_ array: [[String: AnyObject]]) -> [Task] {
+        return array.map(Task.decode)
     }
 
     static func decode(_ json: [String: AnyObject]) -> Task {
@@ -31,11 +40,7 @@ struct Task: Equatable {
         let idTask = JSONInt(json[TaskKeys.id])
         let title = JSONString(json[TaskKeys.title])
         let state = JSONBool(json[TaskKeys.state])
-        var expiration: Date?
-        if let date = JSONString(json[TaskKeys.expiration]) {
-            expiration = date.dateFromString()
-        }
-
+        let expiration = json[TaskKeys.expiration].flatMap(JSONString |> dateFromString)
         let idProject = JSONInt(json[TaskKeys.projectId])
         let userName = JSONString(json[TaskKeys.userName])
 
@@ -58,13 +63,12 @@ struct Task: Equatable {
             taskDictionary[TaskKeys.state] = state as AnyObject
         }
 
-        if let expiration = task.expiration,
-            let expirationDate = expiration.stringFromDate() {
-            taskDictionary[TaskKeys.expiration] = expirationDate as AnyObject
+        if let expiration = task.expiration {
+            taskDictionary[TaskKeys.expiration] = expiration.stringFromDate() as AnyObject
         }
 
-        if let project = task.projectId {
-            taskDictionary[TaskKeys.projectId] = project as AnyObject
+        if let projectId = task.projectId {
+            taskDictionary[TaskKeys.projectId] = projectId as AnyObject
         }
 
         if let user = task.userName {
@@ -74,65 +78,58 @@ struct Task: Equatable {
         return taskDictionary
     }
 
-    func stateAsString() -> String {
+    static func state(with string: String) -> TaskResult {
 
-        guard let state = self.state else {
-            return TaskState.doing
+        if string == TaskState.completed || string == TaskState.doing {
+            return TaskResult.Success(string == TaskState.completed ? true : false)
         }
 
+        return TaskResult.Failure(.UnknownState)
+    }
+
+    static func stateAsString(state: Bool) -> String {
         return state ? TaskState.completed : TaskState.doing
     }
 
-    static func stateAsBool(state: String) -> Bool {
-        return state == TaskState.completed
+    static func dateFromString(data: Any) -> Date? {
+
+        return (data as? String).flatMap { $0.dateFromString() }
     }
 
     static func countTaskTypes(tasks: [Task]?) -> TaskTypesCount {
 
-        guard let tasks = tasks else {
-            return TaskTypesCount(completed: 0, doing: 0)
-        }
+        return tasks.flatMap { task in
+            task.reduce(TaskTypesCount(completed: 0, doing: 0)) { accumulator, task in
 
-        var completed = 0, doing = 0
+                task.state.flatMap { state in
+                    state ? TaskTypesCount(accumulator.completed + 1, accumulator.doing) :
+                        TaskTypesCount(accumulator.completed, accumulator.doing + 1)
 
-        tasks.forEach { task in
-            if task.stateAsString() == TaskState.completed {
-                completed += 1
-            } else {
-                doing += 1
+                } ?? accumulator
             }
-        }
-
-        return TaskTypesCount(completed: completed, doing: doing)
+        } ?? TaskTypesCount(completed: 0, doing: 0)
     }
 
-    static func == (lhs: Task, rhs: Task) -> Bool {
+    public static func == (lhs: Task, rhs: Task) -> Bool {
         return lhs.taskId == rhs.taskId
+    }
+
+    func stateAsString() -> String {
+        return state.map { $0 ? TaskState.completed : TaskState.doing } ?? TaskState.doing
     }
 }
 
 public class TaskValidator {
 
-    public static func validateTitle(title: String?) -> Bool {
-
-        guard let title = title else {
-            return false
-        }
-
-        return title.count >= 40
+    public class var Title: Validator<String, TaskError> {
+        return validate(.TitleTooShort) { $0.count >= 40 }
     }
 
-    public static func validateState(state: Bool?) -> Bool {
-
-        return state != nil
+    public class var State: Validator<Optional<Bool>, TaskError> {
+        return validate(.UnknownState) { $0 != nil }
     }
 
-    public static func validateDate(date: Date?) -> Bool {
-
-        guard let date = date else {
-            return false
-        }
-
-        return date > Date()
+    public class var Expiration: Validator<Date, TaskError> {
+        return validate(.InvalidDate) { $0 > Date() }
     }
 }

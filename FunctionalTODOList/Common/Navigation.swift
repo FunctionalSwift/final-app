@@ -20,11 +20,7 @@ class Navigation: NSObject {
 
     func setRootViewController(_ viewController: UIViewController) {
 
-        if let window = self.window {
-            window.rootViewController = viewController
-        } else {
-            print("ERROR: Window cannot be nil")
-        }
+        window.flatMap { $0.rootViewController = viewController } ?? print("ERROR: Window cannot be nil")
     }
 
     func setRootViewControllerWithNavigationController(_ viewController: UIViewController) {

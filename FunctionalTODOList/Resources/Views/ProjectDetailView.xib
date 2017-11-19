@@ -73,7 +73,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="Nct-sA-eRj"/>
                     </constraints>
-                    <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="5" minimumInteritemSpacing="5" id="gcz-JW-4Ho">
+                    <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="gcz-JW-4Ho">
                         <size key="itemSize" width="30" height="30"/>
                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
                         <size key="footerReferenceSize" width="0.0" height="0.0"/>

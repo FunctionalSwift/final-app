@@ -33,8 +33,10 @@
 
 "error_alert_title" = "Oops!";
 "error_AddTask_alert_message" = "An error occurred creating a task.";
-"error_invalid_data" = "Task data invalid.";
-"error_project_invalid_data" = "Project data invalid.";
+"error_TaskTitle_Too_Short" = "Task title should have more than 40 characters.";
+"error_TaskState_Incorrect" = "Task state incorrect.";
+"error_UpdateTask_alert_message" = "An error occurred updating the task.";
+"error_DeleteTask_alert_message" = "An error occurred deleting the task.";
 
 "user_first_name" = "First Name";
 "user_last_name" = "Last Name";

@@ -21,11 +21,7 @@ class PickerView: UIPickerView, UIPickerViewDelegate, UIPickerViewDataSource {
     }
 
     func pickerView(_: UIPickerView, numberOfRowsInComponent _: Int) -> Int {
-
-        if let dataSource = pickerDataSource {
-            return dataSource.count
-        }
-        return 0
+        return pickerDataSource.flatMap { $0.count } ?? 0
     }
 
     func pickerView(_: UIPickerView, titleForRow row: Int, forComponent _: Int) -> String? {
@@ -35,9 +31,10 @@ class PickerView: UIPickerView, UIPickerViewDelegate, UIPickerViewDataSource {
 
     func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent _: Int) {
 
-        if let delegate = pickerDelegate,
-            let datasource = pickerDataSource {
-            delegate.updateElementSelected(element: datasource[row])
+        pickerDelegate.flatMap { picker in
+            pickerDataSource.flatMap {
+                picker.updateElementSelected(element: $0[row])
+            }
         }
     }
 

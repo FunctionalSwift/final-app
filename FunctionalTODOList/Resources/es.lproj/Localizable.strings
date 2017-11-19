@@ -34,8 +34,10 @@
 
 "error_alert_title" = "Oops!";
 "error_AddTask_alert_message" = "Ha ocurrido un error creando la tarea.";
-"error_invalid_data" = "Los datos de la tarea no son válidos.";
-"error_project_invalid_data" = "Los datos del proyecto no son válidos.";
+"error_TaskTitle_Too_Short" = "El título de la tarea debe tener más de 40 caracteres.";
+"error_TaskState_Incorrect" = "El estado de la tarea incorrecto.";
+"error_UpdateTask_alert_message" = "Ha ocurrido un error actualizando los datos de la tarea.";
+"error_DeleteTask_alert_message" = "Ha ocurrido un error eliminando los datos de la tarea.";
 
 "user_first_name" = "Nombre";
 "user_last_name" = "Apellidos";

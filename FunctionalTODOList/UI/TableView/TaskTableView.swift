@@ -6,7 +6,7 @@ class TaskTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
 
     var taskDelegate: TaskDelegate?
 
-    fileprivate var projectTaskArray: [Project]?
+    fileprivate var projectTaskArray: [Project<Task>]?
     fileprivate var taskArray: [Task]?
     fileprivate var selectable: Bool = false
     fileprivate let taskCellIdentifier = "TaskTableViewCell"
@@ -39,7 +39,7 @@ class TaskTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
         reloadData()
     }
 
-    func setupTableViewWith(projects: [Project], taskDelegate: TaskDelegate, selectable: Bool) {
+    func setupTableViewWith(projects: [Project<Task>], taskDelegate: TaskDelegate, selectable: Bool) {
 
         tableViewInitialSetup()
 
@@ -65,7 +65,7 @@ class TaskTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
         reloadData()
     }
 
-    func reloadDataWith(_ projects: [Project]) {
+    func reloadDataWith(_ projects: [Project<Task>]) {
         projectTaskArray = projects
         reloadData()
     }
@@ -74,7 +74,7 @@ class TaskTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
         return taskArray
     }
 
-    func getProjects() -> [Project]? {
+    func getProjects() -> [Project<Task>]? {
         return projectTaskArray
     }
 

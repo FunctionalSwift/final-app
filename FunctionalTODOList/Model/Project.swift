@@ -13,24 +13,46 @@ public enum ProjectError {
     }
 }
 
-struct Project {
+public struct Project<T> {
 
     var projectId: Int?
     var description: String?
-    var elements: [Task]?
+    var elements: [T]?
 
-    static func decode(_ json: [String: AnyObject]) -> Project {
+    func map<U>(_ transform: @escaping (T) -> U) -> Project<U> {
+        return Project<U>(projectId: projectId, description: description, elements: elements?.map(transform))
+    }
+
+    func flatMap<U>(_ transform: (T) -> Project<U>) -> Project<U> {
+
+        let elements = self.elements?
+            .map(transform)
+            .flatMap { $0.elements }
+            .joined()
+            .map { $0 }
+
+        return Project<U>(projectId: projectId, description: description, elements: elements)
+    }
+}
+
+public class ProjectTasks {
+
+    static func modelsFromDictionaryArray(_ array: [[String: AnyObject]]) -> [Project<Task>] {
+        return array.map(ProjectTasks.decode)
+    }
+
+    static func decode(_ json: [String: AnyObject]) -> Project<Task> {
 
         let idProject = JSONInt(json[ProjectKeys.id])
         let description = JSONString(json[ProjectKeys.description])
-        let tasks = Task.modelsFromDictionaryArray(JSONArray(json[ProjectKeys.tasks]))
+        let tasks = JSONArray(json[ProjectKeys.tasks]).map(Task.modelsFromDictionaryArray)
 
-        return Project(projectId: idProject, description: description, elements: tasks)
+        return Project<Task>(projectId: idProject, description: description, elements: tasks)
     }
 
-    static func encode(_ project: Project) -> [String: AnyObject] {
+    static func encode(_ project: Project<Task>) -> [String: AnyObject] {
 
-        var projectDictionary = Dictionary<String, AnyObject>()
+        var projectDictionary = [String: AnyObject]()
 
         if let id = project.projectId {
             projectDictionary[ProjectKeys.id] = id as AnyObject
@@ -42,11 +64,28 @@ struct Project {
 
         return projectDictionary
     }
+
+    static func getDate(task: Task) -> Date {
+        return task.expiration!
+    }
+
+    static func getState(task: Task) -> Bool {
+        return task.state!
+    }
+
+    static func getUserName(task: Task) -> Project<String> {
+
+        return task.userName.map {
+            Project<String>.init(projectId: nil, description: nil, elements: [$0])
+        } ?? Project<String>.init()
+    }
 }
 
 public class ProjectValidator {
 
-    public class func validateDescription(description: String) -> Bool {
-        return description.count >= 30
+    public class var Description: Validator<String, ProjectError> {
+        return validate(.DescriptionTooShort) {
+            $0.count >= 30
+        }
     }
 }

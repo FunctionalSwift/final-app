@@ -24,46 +24,24 @@ class ProjectDetailView: UIView {
         super.init(coder: aDecoder)
     }
 
-    func setupWith(project: Project) {
+    func setupWith(project: Project<Task>) {
 
         descriptionLabel.text = project.description
 
         expirationDateTitleLabel.text = NSLocalizedString("project_date", comment: "")
         stateTitleLabel.text = NSLocalizedString("project_state", comment: "")
 
-        var users = [String]()
-        var date: Date?
-        var state = true
+        if let dates = project.map(ProjectTasks.getDate).elements, !dates.isEmpty {
 
-        if let tasks = project.elements, !tasks.isEmpty {
-
-            tasks.forEach { task in
-
-                if let user = task.userName, user != "" {
-                    users.append(user)
-                }
-
-                if let expiration = task.expiration {
-                    if date == nil || date! > expiration {
-                        date = expiration
-                    }
-                }
-
-                if let taskState = task.state, !taskState {
-                    state = taskState
-                }
-            }
-
-            if let date = date {
-                expirationDateLabel.attributedText = colorizeDate(date: date)
-            } else {
-                expirationDateLabel.text = "_"
-            }
-
-            stateLabel.text = state ? TaskState.completed : TaskState.doing
-
+            expirationDateLabel.attributedText = colorizeDate(date: dates.reduce(dates[0]) { $1 > $0 ? $0 : $1 })
         } else {
             expirationDateLabel.text = "-"
+        }
+
+        if let states = project.map(ProjectTasks.getState).elements, !states.isEmpty {
+
+            stateLabel.text = Task.stateAsString(state: states.filter { $0 == false }.isEmpty)
+        } else {
             stateLabel.text = "-"
         }
 
@@ -71,13 +49,14 @@ class ProjectDetailView: UIView {
 
         completedTasksLabel.text = "\(taskTypesCount.completed)/\(taskTypesCount.doing + taskTypesCount.completed)"
 
-        if users.isEmpty {
+        if let users = project.flatMap(ProjectTasks.getUserName).elements,
+            !users.isEmpty {
+            usersCollectionView.setupCollectionViewWith(users: users)
+        } else {
             usersCollectionView.isHidden = true
             stateTitleLabelBottomConstraint.constant = 5
             stateLabelBottomConstraint.constant = 5
             completedTasksLabelBottomConstraint.constant = 5
-        } else {
-            usersCollectionView.setupCollectionViewWith(users: users)
         }
     }
 }

@@ -41,8 +41,9 @@ class TaskTableViewCell: UITableViewCell {
         }
 
         taskStateLabel.text = task.stateAsString()
-        if let expiration = task.expiration {
-            taskExpirationLabel.attributedText = colorizeDate(date: expiration)
+
+        if task.expiration != nil {
+            taskExpirationLabel.attributedText = (getExpirationDate |> colorizeDate)(task)
         }
 
         self.selectable = selectable
@@ -55,16 +56,11 @@ class TaskTableViewCell: UITableViewCell {
             taskTitleLabelTrailingConstraint.constant = 0
         }
 
-        if let user = task.userName, user != "" {
-
-            let userArray = user.components(separatedBy: " ")
-
-            var initials = ""
-            userArray.forEach { element in
-                if initials.count < 2 { initials += element.uppercased().prefix(1) }
-            }
-            userLabel.text = initials
-
+        if let user = task.userName {
+            userLabel.text = user.components(separatedBy: " ")
+                .map { String($0.uppercased().prefix(1)) }
+                .prefix(2)
+                .joined()
             userView.isHidden = false
             taskStateLabelLeadingConstraint.constant = 45
         } else {

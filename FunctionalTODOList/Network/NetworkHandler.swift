@@ -4,9 +4,22 @@ import UIKit
 import Alamofire
 
 enum WSError: Error {
-    case dataRequired(Message: String)
-    case noData(Message: String)
-    case genericError(Message: String)
+    case DataRequired(Message: String)
+    case NoData(Message: String)
+    case GenericError(Message: String)
+
+    func description() -> String {
+        switch self {
+        case let .DataRequired(message):
+            return message
+
+        case let .NoData(message):
+            return message
+
+        case let .GenericError(message):
+            return message
+        }
+    }
 }
 
 typealias APIBasicSuccessCompletionBlock = (_ json: Any?) -> Void
